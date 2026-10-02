@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manger à McGill · 600 people, one world record</title>
+<meta name="description" content="Help McGill break the world record for the most people eating tire sur la neige at the same time. Goal: 600.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Figtree:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#ED1B2F;--deep:#C8102E;--ink:#2a2a2e;--muted:#5d6068;--paper:#fbf9f6;--line:#e4dfda;
+  --sans:"Figtree","Helvetica Neue",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font:400 18px/1.65 var(--sans);color:var(--ink);background:#f1ece8;min-height:100vh}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+/* watercolor backdrop */
+.bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+
+/* nav */
+header{position:sticky;top:0;z-index:5;padding:calc(14px + env(safe-area-inset-top,0px)) 20px 0}
+.nav{max-width:920px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:rgba(251,249,246,.92);backdrop-filter:blur(6px);border-radius:999px;padding:8px 10px 8px 24px}
+.brand{font-family:var(--serif);font-weight:600;font-size:1.15rem;letter-spacing:.14em;text-decoration:none;color:var(--ink)}
+.lang{display:flex;gap:2px}
+.lang button{font:500 .85rem var(--sans);letter-spacing:.1em;border:0;background:none;color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+/* paper panels with torn edges */
+main{max-width:920px;margin:0 auto;padding:40px 20px 80px;display:grid;gap:56px}
+.panel{position:relative;isolation:isolate;padding:72px 56px;text-align:center}
+.panel::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--paper);
+  filter:url(#torn) drop-shadow(0 10px 22px rgba(80,30,30,.12))}
+.panel>*{margin-left:auto;margin-right:auto}
+h1,h2{font-family:var(--serif);font-weight:500;text-transform:uppercase;letter-spacing:.05em;line-height:1.12}
+h1{font-size:clamp(2.6rem,7.6vw,5rem)}
+h2{font-size:clamp(1.9rem,4.6vw,3rem);margin-bottom:20px}
+h3{font-weight:500;letter-spacing:.12em;font-size:1rem;margin-bottom:6px}
+p{max-width:56ch;color:var(--muted)}
+.lede{font-size:1.2rem;margin:26px auto 34px;color:var(--ink)}
+.small{letter-spacing:.3em;font-weight:500;font-size:.8rem;color:var(--ink);margin-top:34px}
+.squig{position:absolute;stroke:var(--ink);fill:none;stroke-width:1.2;stroke-linecap:round;opacity:.8}
+
+.btn{display:inline-block;font:500 1rem var(--sans);letter-spacing:.08em;background:var(--deep);color:#fff;border:0;border-radius:999px;padding:15px 34px;text-decoration:none;cursor:pointer;transition:background .2s}
+.btn:hover{background:#9c0b22}
+.btn.ghost{background:none;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:rgba(42,42,46,.07)}
+.row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+/* progress brush bar */
+.meter{max-width:440px;margin-top:44px}
+.meter-top{display:flex;justify-content:space-between;font-size:.95rem;letter-spacing:.06em;color:var(--ink);margin-bottom:8px}
+.track{height:12px;background:var(--line);border-radius:999px;overflow:hidden}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#f58a95,var(--red));border-radius:999px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px;text-align:center}
+.steps p{font-size:1rem;margin:0 auto}
+.steps b{display:block;font-family:var(--serif);font-weight:500;font-size:3.4rem;color:var(--red);line-height:1;margin-bottom:10px}
+
+/* form */
+form{display:grid;gap:18px;max-width:460px;text-align:left;margin-top:30px}
+label{display:grid;gap:6px;font-weight:500;font-size:.95rem;letter-spacing:.04em}
+input,select{font:400 1rem var(--sans);padding:13px 14px;border:1.5px solid #bdb6b0;border-radius:10px;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:3px solid var(--ink);outline-offset:1px}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:400;color:var(--muted);font-size:.95rem}
+.check input{margin-top:5px;accent-color:var(--deep)}
+form .btn{justify-self:start}
+.ok{display:none;margin-top:24px}
+.ok.show{display:block}
+#err{display:none;color:var(--deep);font-weight:500}
+
+.msg{max-width:52ch;margin-top:28px;font-size:1rem;color:var(--ink)}
+footer{text-align:center;padding:0 20px calc(40px + env(safe-area-inset-bottom,0px));font-size:.85rem;letter-spacing:.2em;color:var(--ink)}
+
+
+@media(max-width:760px){
+  .panel{padding:56px 24px}
+  .steps{grid-template-columns:1fr;gap:28px}
+  .squig{display:none}
+  body{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#bar{transition:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="torn" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="4" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="paint" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency=".012 .03" numOctaves="3" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="1.6"/>
+  </filter>
+</svg>
+
+<svg class="bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g filter="url(#paint)">
+    <rect x="-60" y="-80" width="260" height="360" fill="#F6B3B9" opacity=".75" transform="rotate(8 70 100)"/>
+    <rect x="250" y="-120" width="70" height="330" fill="#C8102E" opacity=".85"/>
+    <rect x="340" y="-120" width="60" height="250" fill="#ED1B2F" opacity=".6"/>
+    <rect x="440" y="-100" width="150" height="200" fill="#F9D3D6" opacity=".8" transform="rotate(-6 500 0)"/>
+    <rect x="1060" y="-80" width="460" height="260" fill="#C9CED4" opacity=".7" transform="rotate(-12 1200 50)"/>
+    <rect x="1250" y="180" width="260" height="300" fill="#F2A6AD" opacity=".7" transform="rotate(10 1350 300)"/>
+    <rect x="-80" y="560" width="300" height="130" fill="#F4A3AB" opacity=".75" transform="rotate(-18 60 620)"/>
+    <rect x="-90" y="720" width="340" height="220" fill="#E8D8D0" opacity=".9"/>
+    <rect x="300" y="790" width="120" height="200" fill="#D9334A" opacity=".6"/>
+    <rect x="470" y="810" width="260" height="160" fill="#F9D3D6" opacity=".85" transform="rotate(4 600 880)"/>
+    <rect x="800" y="780" width="420" height="200" fill="#B8C1CB" opacity=".7" transform="rotate(-8 1000 880)"/>
+    <rect x="1180" y="640" width="320" height="300" fill="#ED1B2F" opacity=".55" transform="rotate(6 1340 780)"/>
+  </g>
+</svg>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="#top">MANGER À McGILL</a>
+    <div class="lang" role="group" aria-label="Language / Langue">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="panel" aria-labelledby="h1">
+    <svg class="squig" style="left:30px;top:30px" width="90" height="50" viewBox="0 0 90 50" aria-hidden="true"><path d="M2 40C20 5 40 45 55 20S80 5 88 18"/></svg>
+    <svg class="squig" style="right:30px;bottom:30px" width="90" height="50" viewBox="0 0 90 50" aria-hidden="true"><path d="M2 10C25 40 35 0 55 25S78 40 88 28"/></svg>
+    <h1 id="h1" data-i18n="h1">600 people. One sweet world record.</h1>
+    <p class="lede" data-i18n="lede">McGill is trying to break the world record for the most people eating tire sur la neige at the same time.</p>
+    <div class="row">
+      <a class="btn" href="#register" data-i18n="cta1">Save my spot</a>
+      <a class="btn ghost" href="#share" data-i18n="cta2">Spread the word</a>
+    </div>
+    <div class="meter" aria-live="polite">
+      <div class="meter-top"><span><b id="count">0</b> / 600</span><span data-i18n="of">spots claimed</span></div>
+      <div class="track"><div id="bar"></div></div>
+    </div>
+    <p class="small" data-i18n="when">DATE TO BE ANNOUNCED · McGILL CAMPUS, MONTRÉAL</p>
+  </section>
+
+  <section class="panel" id="about">
+    <h2 data-i18n="about_h">A Quebec classic, a record to beat</h2>
+    <p data-i18n="about_p1">Tire sur la neige is hot maple syrup poured onto packed snow, then rolled onto a stick. It is the taste of a Quebec winter.</p>
+    <p style="margin-top:16px" data-i18n="about_p2">On the day, 600 students, staff, alumni and neighbours will eat it together, at the same moment, while officials count. If we reach the number, the record is ours.</p>
+    <div class="steps">
+      <div><b>1</b><h3 data-i18n="s1h">Register</h3><p data-i18n="s1p">Claim a spot below. It takes a minute and it is free.</p></div>
+      <div><b>2</b><h3 data-i18n="s2h">Show up together</h3><p data-i18n="s2p">Join your group on the day. We confirm time and place by email.</p></div>
+      <div><b>3</b><h3 data-i18n="s3h">Eat on the count</h3><p data-i18n="s3p">At the signal, everyone eats at once. Officials verify the numbers.</p></div>
+    </div>
+  </section>
+
+  <section class="panel" id="register">
+    <h2 data-i18n="reg_h">Claim your spot</h2>
+    <p data-i18n="reg_p">We need every one of the 600. We will send the details as soon as they are set.</p>
+    <form id="form" novalidate>
+      <label><span data-i18n="l_name">Full name</span><input id="name" name="name" autocomplete="name" required></label>
+      <label><span data-i18n="l_email">Email</span><input id="email" name="email" type="email" autocomplete="email" required></label>
+      <label><span data-i18n="l_role">I am a</span>
+        <select id="role" name="role">
+          <option value="student" data-i18n="o1">McGill student</option>
+          <option value="staff" data-i18n="o2">McGill staff or faculty</option>
+          <option value="alumni" data-i18n="o3">Alum</option>
+          <option value="community" data-i18n="o4">Community member</option>
+        </select></label>
+      <label class="check"><input type="checkbox" id="consent"><span data-i18n="l_consent">I agree to receive emails about this event.</span></label>
+      <p id="err" role="alert"></p>
+      <button class="btn" type="submit" data-i18n="submit">Register</button>
+    </form>
+    <div class="ok" id="ok" role="status" tabindex="-1">
+      <h2 data-i18n="ok_h">You are in.</h2>
+      <p data-i18n="ok_p">Your spot is saved. Bring a friend and help us reach 600.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="share">
+    <h2 data-i18n="sh_h">Help us find the other 599</h2>
+    <p data-i18n="sh_p">The record only works if the crowd is full. Send this page to your friends, classmates and group chats.</p>
+    <div class="row" style="margin-top:28px">
+      <button class="btn" type="button" id="nativeShare" data-i18n="sh_share">Share this page</button>
+      <button class="btn ghost" type="button" id="copy" data-i18n="sh_copy">Copy link</button>
+      <a class="btn ghost" id="mail" href="#" data-i18n="sh_mail">Send by email</a>
+    </div>
+    <p class="msg" data-i18n="sh_msg">I am helping McGill break a world record: 600 people eating tire sur la neige at the same time. Join us! #MangerAMcGill</p>
+  </section>
+</main>
+
+<footer>#MANGERAMCGILL</footer>
+
+<script>
+/* ---- CONFIG ---- */
+var TOTAL=600, REGISTERED=0;   /* set REGISTERED to your real sign-up count */
+var FORM_ENDPOINT="";          /* paste a Formspree / Google Forms URL; empty = demo mode */
+/* ---------------- */
+var T={
+en:{h1:"600 people. One sweet world record.",lede:"McGill is trying to break the world record for the most people eating tire sur la neige at the same time.",cta1:"Save my spot",cta2:"Spread the word",of:"spots claimed",when:"DATE TO BE ANNOUNCED · McGILL CAMPUS, MONTRÉAL",
+about_h:"A Quebec classic, a record to beat",about_p1:"Tire sur la neige is hot maple syrup poured onto packed snow, then rolled onto a stick. It is the taste of a Quebec winter.",about_p2:"On the day, 600 students, staff, alumni and neighbours will eat it together, at the same moment, while officials count. If we reach the number, the record is ours.",
+s1h:"Register",s1p:"Claim a spot below. It takes a minute and it is free.",s2h:"Show up together",s2p:"Join your group on the day. We confirm time and place by email.",s3h:"Eat on the count",s3p:"At the signal, everyone eats at once. Officials verify the numbers.",
+reg_h:"Claim your spot",reg_p:"We need every one of the 600. We will send the details as soon as they are set.",l_name:"Full name",l_email:"Email",l_role:"I am a",o1:"McGill student",o2:"McGill staff or faculty",o3:"Alum",o4:"Community member",l_consent:"I agree to receive emails about this event.",submit:"Register",ok_h:"You are in.",ok_p:"Your spot is saved. Bring a friend and help us reach 600.",
+sh_h:"Help us find the other 599",sh_p:"The record only works if the crowd is full. Send this page to your friends, classmates and group chats.",sh_share:"Share this page",sh_copy:"Copy link",sh_copied:"Link copied",sh_mail:"Send by email",sh_msg:"I am helping McGill break a world record: 600 people eating tire sur la neige at the same time. Join us! #MangerAMcGill",
+e_name:"Enter your full name.",e_email:"Enter a valid email address, like name@mail.mcgill.ca.",e_consent:"Tick the box to confirm you agree to receive emails.",mail_sub:"Join me: 600 people, one world record"},
+fr:{h1:"600 personnes. Un record du monde bien sucré.",lede:"McGill tente de battre le record du monde du plus grand nombre de personnes mangeant de la tire sur la neige en même temps.",cta1:"Réserver ma place",cta2:"Passer le mot",of:"places réservées",when:"DATE À CONFIRMER · CAMPUS DE McGILL, MONTRÉAL",
+about_h:"Un classique du Québec, un record à battre",about_p1:"La tire sur la neige, c’est du sirop d’érable chaud versé sur de la neige tassée, puis enroulé sur un bâtonnet. C’est le goût de l’hiver québécois.",about_p2:"Le jour J, 600 étudiants, employés, diplômés et voisins la mangeront ensemble, au même moment, devant des officiels qui comptent. Si nous atteignons le chiffre, le record est à nous.",
+s1h:"Inscrivez-vous",s1p:"Réservez une place ci-dessous. Ça prend une minute et c’est gratuit.",s2h:"Venez ensemble",s2p:"Rejoignez votre groupe le jour même. Nous confirmons l’heure et le lieu par courriel.",s3h:"Mangez au signal",s3p:"Au signal, tout le monde mange en même temps. Des officiels vérifient le nombre.",
+reg_h:"Réservez votre place",reg_p:"Il nous faut les 600. Nous vous enverrons les détails dès qu’ils seront fixés.",l_name:"Nom complet",l_email:"Courriel",l_role:"Je suis",o1:"Étudiant(e) à McGill",o2:"Employé(e) ou professeur(e) de McGill",o3:"Diplômé(e)",o4:"Membre de la communauté",l_consent:"J’accepte de recevoir des courriels au sujet de l’événement.",submit:"S’inscrire",ok_h:"C’est confirmé.",ok_p:"Votre place est réservée. Invitez un ami et aidez-nous à atteindre 600.",
+sh_h:"Aidez-nous à trouver les 599 autres",sh_p:"Le record ne fonctionne que si la foule est au rendez-vous. Envoyez cette page à vos amis, camarades et groupes de discussion.",sh_share:"Partager cette page",sh_copy:"Copier le lien",sh_copied:"Lien copié",sh_mail:"Envoyer par courriel",sh_msg:"J’aide McGill à battre un record du monde : 600 personnes qui mangent de la tire sur la neige en même temps. Joignez-vous à nous! #MangerAMcGill",
+e_name:"Entrez votre nom complet.",e_email:"Entrez une adresse courriel valide, comme nom@mail.mcgill.ca.",e_consent:"Cochez la case pour confirmer que vous acceptez de recevoir des courriels.",mail_sub:"Joignez-vous à moi : 600 personnes, un record du monde"}};
+var lang=(navigator.language||"en").slice(0,2)==="fr"?"fr":"en";
+try{lang=localStorage.getItem("lang")||lang}catch(e){}
+function renderCount(){document.getElementById("count").textContent=REGISTERED;document.getElementById("bar").style.width=(REGISTERED/TOTAL*100)+"%"}
+function setLang(l){
+  lang=l;document.documentElement.lang=l;
+  document.querySelectorAll("[data-i18n]").forEach(function(el){var v=T[l][el.dataset.i18n];if(v)el.textContent=v});
+  document.querySelectorAll(".lang button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.lang===l)});
+  document.getElementById("mail").href="mailto:?subject="+encodeURIComponent(T[l].mail_sub)+"&body="+encodeURIComponent(T[l].sh_msg+"\n\n"+location.href);
+  try{localStorage.setItem("lang",l)}catch(e){}
+}
+document.querySelectorAll(".lang button").forEach(function(b){b.addEventListener("click",function(){setLang(b.dataset.lang)})});
+setLang(lang);renderCount();
+
+var form=document.getElementById("form"),err=document.getElementById("err"),ok=document.getElementById("ok");
+form.addEventListener("submit",function(e){
+  e.preventDefault();var m="";
+  if(!form.name.value.trim())m=T[lang].e_name;
+  else if(!/^\S+@\S+\.\S+$/.test(form.email.value.trim()))m=T[lang].e_email;
+  else if(!form.consent.checked)m=T[lang].e_consent;
+  if(m){err.textContent=m;err.style.display="block";return}
+  err.style.display="none";
+  if(FORM_ENDPOINT){fetch(FORM_ENDPOINT,{method:"POST",headers:{"Accept":"application/json"},body:new FormData(form)}).catch(function(){})}
+  if(REGISTERED<TOTAL){REGISTERED++;renderCount()}
+  form.style.display="none";ok.classList.add("show");ok.focus();
+});
+document.getElementById("nativeShare").addEventListener("click",function(){
+  if(navigator.share){navigator.share({title:"Manger à McGill",text:T[lang].sh_msg,url:location.href}).catch(function(){})}
+  else{document.getElementById("copy").click()}
+});
+var cb=document.getElementById("copy");
+cb.addEventListener("click",function(){
+  if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){cb.textContent=T[lang].sh_copied;setTimeout(function(){cb.textContent=T[lang].sh_copy},2000)},function(){})}
+});
+</script>
+</body>
+</html>
